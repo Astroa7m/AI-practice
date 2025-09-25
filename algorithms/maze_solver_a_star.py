@@ -66,6 +66,19 @@ def get_accessible_neighbours(maze: np.ndarray, cell: tuple, include_diagonals=T
     return neighbour_cells
 
 
+# # a 15x15 grid initialized with zeros
+# complex_maze = np.zeros((15, 15))
+#
+# blocks = [(2,8), (2,9), (2,10), (2,11), (2,12),
+#           (8,8), (8,9), (8,10), (8,11), (8,12),
+#           (3,8), (4,8), (5,8), (6,8), (7,8),
+#           (3,12), (4,12), (6,12), (7,12)]
+#
+# # mark block-occupied cells with 1
+# for block in blocks:
+#     complex_maze[block] = 1
+# print(complex_maze)
+
 maze = np.zeros((10, 10), dtype=int)
 walls = [
     (1, 1), (1, 2), (1, 3), (1, 6), (1, 7), (1, 8),
@@ -110,6 +123,8 @@ def calculate_heuristic(cell, end_cell):
 
 start = (9, 0)
 goal = (9, 9)
+# start = (14, 0)
+# goal = (5, 10)
 
 
 # print(h(start, goal))
@@ -147,11 +162,12 @@ def A_star(start, goal, maze):
     opened.put((f[start], start))
 
     while not opened.empty():
+        # gets the lowest f_score cell, because of how PriorityQueue works
         f_score, current = opened.get()
 
-        # if we reached goal then stop & reconstruct path
+        # if we reached goal then stop & reconstruct path and gets the cost
         if current == goal:
-            return reconstruct_path(came_from, current)
+            return (reconstruct_path(came_from, current), g[current])
 
         closed.add(current)
         neighbours = get_accessible_neighbours(maze, current)
@@ -161,7 +177,7 @@ def A_star(start, goal, maze):
             # calculating before assigning
             # weights/distance from A to current node
             # since this is a maze/matrix/grid then we are saying
-            # it costs 1 unit to move from 1 cell to another adjacent cell
+            # it costs 1 unit to move from 1 cell to another adjacent cell in all 8 directions
             # so from A->B->C is 2 since 0 + 1 + 1
             current_g = g[current] + 1
             current_h = calculate_heuristic(neighbour, goal)
