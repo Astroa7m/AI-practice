@@ -1,3 +1,4 @@
+import joblib
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.feature_extraction.text import CountVectorizer
@@ -6,7 +7,6 @@ from sklearn.pipeline import make_pipeline
 from sklearn.metrics import accuracy_score, confusion_matrix
 import scikitplot
 import matplotlib.pyplot as plt
-
 """//////////////////////Dataset//////////////////////"""
 imbd_reviews = pd.read_csv("IMDB Dataset.csv")
 
@@ -76,3 +76,8 @@ plot = scikitplot.metrics.plot_confusion_matrix(
     figsize=(5,5)
 )
 plt.show()
+
+# exporting prediction pipeline
+file_name = "../pipelines/sentiment_pipeline.pkl"
+joblib.dump(prediction_pipleline, file_name)
+print(f"exported pipeline to: {file_name}")
